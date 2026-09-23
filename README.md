@@ -58,6 +58,10 @@ smart-waste-management/
 └── static/
     ├── style.css
     └── script.js
+
+So it becomes exactly:
+
+```text
 ## 📸 Screenshots
 
 ### 🏠 Home Page
