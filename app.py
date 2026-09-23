@@ -1,32 +1,21 @@
 from flask import Flask, render_template, request, jsonify
+import os
+import urllib.request
+
 import torch
 from torchvision import models, transforms
 import torch.nn as nn
 from PIL import Image
-import os
-import urllib.request
 
 app = Flask(__name__)
 
 MODEL_URL = "https://github.com/yelakaakshaya-spec/smart-waste-management/releases/download/v1.0/waste_model.pth"
 MODEL_PATH = "waste_model.pth"
 
-if not os.path.exists(MODEL_PATH):
-    urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
-
-model = models.resnet18(weights=None)
-model.fc = nn.Linear(model.fc.in_features, 3)
-
-model.load_state_dict(
-    torch.load(MODEL_PATH, map_location="cpu")
-)
-model.eval()
+model = None
 
 classes = ["organic", "paper", "plastic"]
 
-# -----------------------------
-# Image preprocessing
-# -----------------------------
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -36,9 +25,6 @@ transform = transforms.Compose([
     )
 ])
 
-# -----------------------------
-# Recommendations
-# -----------------------------
 recommendations = {
     "organic": "Put it in the organic/biodegradable waste stream.",
     "paper": "Put it in the paper/recyclable waste stream.",
@@ -52,17 +38,30 @@ tips = {
 }
 
 
-# -----------------------------
-# Home page
-# -----------------------------
+def load_model():
+    global model
+
+    if model is not None:
+        return
+
+    if not os.path.exists(MODEL_PATH):
+        urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
+
+    model = models.resnet18(weights=None)
+    model.fc = nn.Linear(model.fc.in_features, 3)
+
+    model.load_state_dict(
+        torch.load(MODEL_PATH, map_location="cpu")
+    )
+
+    model.eval()
+
+
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-# -----------------------------
-# Prediction API
-# -----------------------------
 @app.route("/predict", methods=["POST"])
 def predict():
 
@@ -75,8 +74,9 @@ def predict():
         return jsonify({"error": "No image selected"}), 400
 
     try:
-        image = Image.open(file).convert("RGB")
+        load_model()
 
+        image = Image.open(file).convert("RGB")
         input_image = transform(image).unsqueeze(0)
 
         with torch.no_grad():
@@ -96,9 +96,6 @@ def predict():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
-# -----------------------------
 # Start server
 # -----------------------------
 if __name__ == "__main__":
