@@ -61,7 +61,7 @@ smart-waste-management/
 
 So it becomes exactly:
 
-```text
+```
 ## 📸 Screenshots
 
 ### 🏠 Home Page
