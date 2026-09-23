@@ -58,3 +58,10 @@ smart-waste-management/
 └── static/
     ├── style.css
     └── script.js
+## 📸 Screenshots
+
+### 🏠 Home Page
+![EcoSort AI Home Page](home.png)
+
+### 🤖 AI Prediction
+![EcoSort AI Prediction](prediction.png)
