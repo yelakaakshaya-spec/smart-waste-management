@@ -1,5 +1,6 @@
 Flask==3.1.3
-torch==2.14.0
-torchvision==0.29.0
 Pillow
 gunicorn
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.14.0+cpu
+torchvision==0.29.0+cpu
