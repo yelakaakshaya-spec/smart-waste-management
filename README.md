@@ -44,7 +44,7 @@ https://smart-waste-management-abz1.onrender.com
 
 ## 📂 Project Structure
 
-```text
+~~~text
 smart-waste-management/
 │
 ├── app.py
@@ -61,7 +61,7 @@ smart-waste-management/
 
 So it becomes exactly:
 
-```
+~~~
 ## 📸 Screenshots
 
 ### 🏠 Home Page
